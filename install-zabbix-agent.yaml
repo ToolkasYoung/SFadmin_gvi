@@ -56,6 +56,24 @@
           src: "templates/zabbix_agentd.conf.j2"
           dest: "/etc/zabbix/zabbix_agentd.conf"
 
+      - name: Creates directory for includes
+        become: yes
+        file:
+          path: /etc/zabbix/zabbix_agentd.d
+          owner: zabbix
+          group: zabbix
+          mode: 0640
+          state: directory
+
+      - name: Creates file for logs
+        become: yes
+        file:
+          path: /var/log/zabbix/zabbix_agent.log
+          owner: zabbix
+          group: zabbix
+          mode: 0640
+          state: touch
+
       - name: Start service zabbix-agent
         become: yes
         service:
