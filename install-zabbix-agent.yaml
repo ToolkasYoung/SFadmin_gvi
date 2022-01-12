@@ -11,24 +11,21 @@
         get_url:
           url: "{{ zabbix_repo_url}}"
           dest: /tmp/zabbix.deb
-        when:
-          ansible_os_family == "Debian"
+        when: ansible_os_family == "Debian"
 
       - name: Install zabbix repo for Ubuntu\Debian
         become: yes
         apt:
           deb: /tmp/zabbix.deb
           state: present
-        when:
-          ansible_os_family == "Debian"
+        when: ansible_os_family == "Debian"
 
       - name: Install zabbix repo for RHEL\Centos
         become: yes
         yum:
          name: "{{ zabbix_repo_url}}"
          state: present
-        when:
-          ansible_os_family == "RedHat"
+        when: ansible_os_family == "RedHat"
 
       - name: Install zabbix agent for Ubuntu\Debian
         become: yes
@@ -36,14 +33,14 @@
           name: zabbix-agent
           state: present
           update_cache: yes
-        when:
-          ansible_os_family == "Debian"
+        when: ansible_os_family == "Debian"
 
       - name: Install zabbix agent for RHEL\Centos
         become: yes
         yum:
           name: zabbix-agent
         state: present
+        when: ansible_os_family == "RedHat"
 
       - name: Stop service zabbix-agent
         become: yes
@@ -68,3 +65,5 @@
         service:
           name: zabbix-agent
           state: started
+          enabled: yes
+          
