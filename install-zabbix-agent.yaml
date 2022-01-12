@@ -5,66 +5,66 @@
       - name: gather os specific variables
         include_vars: "{{ item }}"
         with_first_found:
-            - "vars/{{ ansible_distribution }}.yaml"
+          - "vars/{{ ansible_distribution }}.yaml"
 
       - name: Download zabbix repo package for Ubuntu\Debian
         get_url:
-            url: "{{ zabbix_repo_url}}"
-            dest: /tmp/zabbix.deb
+          url: "{{ zabbix_repo_url}}"
+          dest: /tmp/zabbix.deb
         when:
           ansible_os_family == "Debian"
-
-      - name: Download zabbix repo package for RHEL\Centos
-        get_url:
-            url: "{{ zabbix_repo_url}}"
-            dest: /tmp/zabbix.rpm
-        when:
-          ansible_os_family == "RedHat"
 
       - name: Install zabbix repo for Ubuntu\Debian
         become: yes
         apt:
-            deb: /tmp/zabbix.deb
-            state: present
+          deb: /tmp/zabbix.deb
+          state: present
         when:
           ansible_os_family == "Debian"
 
       - name: Install zabbix repo for RHEL\Centos
         become: yes
         yum:
-            deb: /tmp/zabbix.rpm
-            state: present
+         name: "{{ zabbix_repo_url}}"
+         state: present
         when:
           ansible_os_family == "RedHat"
 
-
-      - name: Install zabbix agent
+      - name: Install zabbix agent for Ubuntu\Debian
         become: yes
         apt:
-            name: zabbix-agent
-            state: present
-            update_cache: yes
+          name: zabbix-agent
+          state: present
+          update_cache: yes
+        when:
+          ansible_os_family == "Debian"
+
+      - name: Install zabbix agent for RHEL\Centos
+        become: yes
+        yum:
+          name: zabbix-agent
+        state: present
 
       - name: Stop service zabbix-agent
         become: yes
         service:
-            name: zabbix-agent
-            state: stopped
+          name: zabbix-agent
+          state: stopped
 
       - name: Remove zabbix config file
         become: yes
         file:
-            path: /etc/zabbix/zabbix_agentd.conf
-            state: absent
+          path: /etc/zabbix/zabbix_agentd.conf
+          state: absent
 
       - name: Create new zabbix config file from template
         become: yes
         template:
-            src: "templates/zabbix_agentd.conf.j2"
-            dest: "/etc/zabbix/zabbix_agentd.conf"
+          src: "templates/zabbix_agentd.conf.j2"
+          dest: "/etc/zabbix/zabbix_agentd.conf"
 
       - name: Start service zabbix-agent
         become: yes
         service:
-            name: zabbix-agent
-            state: started
+          name: zabbix-agent
+          state: started
