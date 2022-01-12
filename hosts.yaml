@@ -1,0 +1,24 @@
+[servers]
+aunion.nginx ansible_ssh_host=192.168.20.227
+aunion.elk ansible_ssh_host=192.168.20.228
+aunion.grafana ansible_ssh_host=192.168.20.230
+aunion.centos ansible_ssh_host=192.168.20.29
+
+[centos]
+aunion.centos
+
+[ubuntu]
+aunion.nginx
+aunion.elk
+aunion.grafana
+
+[web]
+aunion.nginx
+
+[ansible]
+aunion.grafana
+
+[zabbix_agents]
+aunion.elk
+aunion.grafana
+aunion.centos
